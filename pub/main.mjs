@@ -2,11 +2,12 @@ import {EmojiDatabase} from './database.mjs';
 import {LedGrid} from './ledgrid.mjs';
 
 const emojiDatabase = new EmojiDatabase();
+
 const connect = document.querySelector('#connect');
 const disconnect = document.querySelector('#disconnect');
 const emojiPicker = document.querySelector('emoji-picker');
-
 const canvas = document.querySelector('canvas');
+
 const ctx = canvas.getContext('2d');
 let ledgrid;
 

@@ -1,6 +1,7 @@
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
 import {getDatabase, ref, set, get, onValue, child} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
+// The LED grid ID. We always use 1, since we want this to be relected for all users.
 const LED_GRID_ID = "1";
 
 const firebaseConfig = {
@@ -18,6 +19,7 @@ export class EmojiDatabase {
     this.app = initializeApp(firebaseConfig); 
   }
   
+  // Sets an emoji to the database.
   async setEmoji(emoji) {
     const db = getDatabase(this.app);
     set(ref(db, 'ledgrids/' + LED_GRID_ID), {
@@ -25,6 +27,7 @@ export class EmojiDatabase {
     });
   }
   
+  // Reads the current emoji on the database.
   async getEmoji() {
     const dbRef = ref(getDatabase());
     const snapshot = await get(child(dbRef, `ledgrids/${LED_GRID_ID}`));
@@ -35,6 +38,7 @@ export class EmojiDatabase {
     }
   }
   
+  // Listens for changes to the emoji on the database.
   async onEmojiUpdate(callback) {
     const db = getDatabase();
     const starCountRef = ref(db, 'ledgrids/' + LED_GRID_ID + '/emoji');

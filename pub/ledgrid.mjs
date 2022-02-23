@@ -1,5 +1,4 @@
 
-const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 export class LedGrid {
@@ -11,6 +10,10 @@ export class LedGrid {
     this.brightness = 255;
   }
 
+  /**
+   * Sends an image to the LED grid.
+   * @param {Uint8ClampedArray } imageData 
+   */
   async sendImage(imageData) {
     if (!this.writer) {
       console.log('Connect to a device.');
@@ -34,12 +37,20 @@ export class LedGrid {
     console.log(`Sent ${buffer.length} bytes.`);    
   }
   
+  /**
+   * Disconnects from the LED grid.
+   */
   async disconnect() {
       await this.writer.close();
       await this.reader.cancel();
       await this.port.close();
   }
   
+  /**
+   * Coonects the to a LED grid connected to the serial port.
+   * 
+   * @returns a LedGrid connected to a serial port.
+   */
   static async connect() {
     const port = await navigator.serial.requestPort();
     console.log(port);
@@ -52,7 +63,9 @@ export class LedGrid {
   }
 }
 
-
+/**
+ * An infinite loop reading from the serial port and printing to the console.
+ */
 async function readLoop(reader) {
   while (true) {
     const {value, done} = await reader.read();
@@ -66,6 +79,9 @@ async function readLoop(reader) {
   }      
 }   
 
+/**
+ * Applies a gamma conversion to a colour channel to correct the colours displayed on the LED grid.
+ */
 function gamma(input, brightness) {
   if (input === 0) {
     return 0;
