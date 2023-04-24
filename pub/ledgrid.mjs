@@ -7,14 +7,13 @@ export class LedGrid {
     this.writer = port.writable.getWriter()
     this.reader = port.readable.getReader();
     readLoop(this.reader);
-    this.brightness = 255;
   }
 
   /**
    * Sends an image to the LED grid.
    * @param {Uint8ClampedArray } imageData 
    */
-  async sendImage(imageData) {
+  async sendImage(imageData, brightness = 255) {
     if (!this.writer) {
       console.log('Connect to a device.');
       return;
@@ -29,9 +28,9 @@ export class LedGrid {
       let blue = imageData[i * 4 + 2];
 
       // Buffer is RGB
-      buffer[i * 3] = gamma(red, this.brightness);
-      buffer[i * 3 + 1] = gamma(green, this.brightness);
-      buffer[i * 3 + 2] = gamma(blue, this.brightness);
+      buffer[i * 3] = gamma(red, brightness);
+      buffer[i * 3 + 1] = gamma(green, brightness);
+      buffer[i * 3 + 2] = gamma(blue, brightness);
     }
     await this.writer.write(buffer);
     console.log(`Sent ${buffer.length} bytes.`);    

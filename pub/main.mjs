@@ -3,6 +3,7 @@ import {LedGrid} from './ledgrid.mjs';
 
 const emojiDatabase = new EmojiDatabase();
 
+const brightness = document.querySelector('#brightness');
 const connect = document.querySelector('#connect');
 const disconnect = document.querySelector('#disconnect');
 const emojiPicker = document.querySelector('emoji-picker');
@@ -14,6 +15,10 @@ let ledgrid;
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 ctx.font = "12px Arial";
 ctx.fillText("👀", 0, 12);
+
+function getBrightness() {
+  return parseInt(brightness?.value, 10) || 255;
+}
 
 disconnect.addEventListener('click', async () => {
   if (ledgrid) {
@@ -27,7 +32,7 @@ connect.addEventListener('click', async () => {
   ledgrid = await LedGrid.connect();
   connect.disabled = true;
   disconnect.disabled = false;
-  await ledgrid.sendImage(ctx.getImageData(0, 0, 16, 16).data);
+  await ledgrid.sendImage(ctx.getImageData(0, 0, 16, 16).data, getBrightness());
 });
 
 emojiPicker.addEventListener('emoji-click', event => {
@@ -41,6 +46,12 @@ emojiDatabase.onEmojiUpdate((emoji) => {
     ctx.fillStyle = '#FFFFFF';
     ctx.fillText(emoji, 0, 12);
     if (ledgrid) {
-      ledgrid.sendImage(ctx.getImageData(0, 0, 16, 16).data);
+      ledgrid.sendImage(ctx.getImageData(0, 0, 16, 16).data, getBrightness());
     }
 });
+
+brightness.addEventListener('change', () =>
+    localStorage['brightness'] = getBrightness());
+
+document.addEventListener('DOMContentLoaded', () =>
+    brightness.value = localStorage['brightness'] ?? '255');
