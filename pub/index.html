@@ -48,16 +48,26 @@
         display: grid;
       }
 
-
-      .buttons {
+      .configuration {
         margin: 0 4px;
         height: 30px;
+      }
+
+      .configuration label {
+        display: inline-block;
+        border-left: 1px solid #999;
+        padding-left: 4px;
+        line-height: 28px;
       }
 
       .button {
         width: 150px;
         height: 30px;
         text-transform: uppercase;
+      }
+
+      .select {
+        height: 30px;
       }
 
       .hidden {
@@ -70,10 +80,17 @@
   <body>
     <h1>LED Panel</h1>
     <div class="content-wrapper">
-      <div class="buttons">
-        <button id="connect" class="button">Connect
-        </button>
+      <div class="configuration">
+        <button id="connect" class="button">Connect</button>
         <button id="disconnect" disabled class="button">Disconnect</button>
+        <label for="brightness">Brightness:</label>
+        <select id="brightness" name="brightness" class="select">
+          <option>255</option>
+          <option>128</option>
+          <option>64</option>
+          <option>32</option>
+          <option>16</option>
+        </select>
       </div>
       <emoji-picker></emoji-picker>
       <div class="preview">
