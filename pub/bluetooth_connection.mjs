@@ -1,12 +1,28 @@
+import { AsyncBlockingQueue } from './queue.mjs';
+
 const SERVICE_UART = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const CHARACTERISTIC_UART_TX = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 const CHARACTERISTIC_UART_RX = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 
 const CONNECTION_MTU = 100;
 
-export class UartBluetooth {
+export class BluetoothConnection {
     constructor() {
-        this.connected = false;
+        this.readQueue = new AsyncBlockingQueue();
+    }
+
+    async read() {
+        return this.readQueue.dequeue();
+    }
+
+    async write(data) {
+        console.log(`Writing ${data.length} bytes...`);
+        let start = 0;
+        while (start < data.length) {
+            let end = Math.min(start + CONNECTION_MTU, data.length);
+            await this.rxCharacteristic.writeValue(data.slice(start, end));
+            start = end;
+        }        
     }
 
     async connect() {
@@ -30,19 +46,14 @@ export class UartBluetooth {
         this.service = await this.server.getPrimaryService(SERVICE_UART);
         this.rxCharacteristic = await this.service.getCharacteristic(CHARACTERISTIC_UART_RX);
         this.txCharacteristic = await this.service.getCharacteristic(CHARACTERISTIC_UART_TX);
-        await this.txCharacteristic.startNotifications();
 
+        // Setup listening for values and adding to the queue.
+        await this.txCharacteristic.startNotifications();
         const handleNotifications = (event) => {
-            const value = event.target.value;
-            // TODO: Try using TextDecoder instead.
-            let str = "";
-            for (let i = 0; i < value.byteLength; i++) {
-                str += String.fromCharCode(value.getUint8(i));
-            }
-            console.log(str);
+            this.readQueue.enqueue(event.target.value);
         };
         this.txCharacteristic.addEventListener('characteristicvaluechanged', handleNotifications);
-        this.connected = true;
+        this.connected = true;     
     }
 
     async disconnect() {
@@ -61,30 +72,5 @@ export class UartBluetooth {
         }
 
         await this.device.disconnect();
-    }
-
-    async sendImage(imageData) {
-        const numPixels = 32 * 32;
-        const byteLength = numPixels * 3;
-        let buffer = new Uint8Array(byteLength);
-        for (let i = 0; i < 1024; i++) {
-          // imageData is RGBA, but we ignore the alpha channel.
-          let red = imageData[i * 4];
-          let green = imageData[i * 4 + 1];
-          let blue = imageData[i * 4 + 2];
-    
-          // Buffer is RGB
-          buffer[i * 3] = red; //gamma(red, brightness);
-          buffer[i * 3 + 1] = green;//gamma(green, brightness);
-          buffer[i * 3 + 2] = blue; //gamma(blue, brightness);
-        }
-
-        let start = 0;
-        while (start < buffer.length) {
-            let end = Math.min(start + CONNECTION_MTU, buffer.length);
-            console.log(start, end);
-            await this.rxCharacteristic.writeValue(buffer.slice(start, end));
-            start = end;
-        }        
     }
 }

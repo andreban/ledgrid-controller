@@ -1,12 +1,11 @@
-
 const decoder = new TextDecoder();
 
 export class LedGrid {
-  constructor(port) {
-    this.port = port;
-    this.writer = port.writable.getWriter()
-    this.reader = port.readable.getReader();
-    readLoop(this.reader);
+  constructor(connection, width, height) {
+    this.connection = connection;
+    this.width = width;
+    this.height = height;
+    this.readLoop(this.connection);
   }
 
   /**
@@ -14,14 +13,14 @@ export class LedGrid {
    * @param {Uint8ClampedArray } imageData 
    */
   async sendImage(imageData, brightness = 255) {
-    if (!this.writer) {
+    if (!this.connection) {
       console.log('Connect to a device.');
       return;
     }
 
-    const length = 256 * 3;
-    let buffer = new Uint8Array(length);
-    for (let i = 0; i < 256; i++) {
+    const numColours = this.width * this.height;
+    const buffer = new Uint8Array(numColours * 3);
+    for (let i = 0; i < numColours; i++) {
       // imageData is RGBA, but we ignore the alpha channel.
       let red = imageData[i * 4];
       let green = imageData[i * 4 + 1];
@@ -32,51 +31,19 @@ export class LedGrid {
       buffer[i * 3 + 1] = gamma(green, brightness);
       buffer[i * 3 + 2] = gamma(blue, brightness);
     }
-    await this.writer.write(buffer);
-    console.log(`Sent ${buffer.length} bytes.`);    
+    await this.connection.write(buffer);
   }
-  
-  /**
-   * Disconnects from the LED grid.
-   */
-  async disconnect() {
-      await this.writer.close();
-      await this.reader.cancel();
-      await this.port.close();
-  }
-  
-  /**
-   * Coonects the to a LED grid connected to the serial port.
-   * 
-   * @returns a LedGrid connected to a serial port.
-   */
-  static async connect() {
-    const port = await navigator.serial.requestPort();
-    console.log(port);
-    await port.open({
-      baudRate: 115200,
-      dateBits: 8,
-      stopBits: 1
-    });
-    return new LedGrid(port);
+
+  async readLoop() {
+      while (true) {
+        const value = await this.connection.read();
+        if (!value) {
+          continue;
+        }
+        console.log(decoder.decode(value));
+      }
   }
 }
-
-/**
- * An infinite loop reading from the serial port and printing to the console.
- */
-async function readLoop(reader) {
-  while (true) {
-    const {value, done} = await reader.read();
-    if (value) {
-      console.log(decoder.decode(value));
-    }
-    if (done) {
-      reader.releaseLock();
-      break;
-    }
-  }      
-}   
 
 /**
  * Applies a gamma conversion to a colour channel to correct the colours displayed on the LED grid.
