@@ -1,4 +1,5 @@
-import { AsyncBlockingQueue } from './queue.mjs';
+import { AsyncBlockingQueue } from '../queue.js';
+import { DeviceConnection } from './connection.js';
 
 const SERVICE_UART = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const CHARACTERISTIC_UART_TX = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
@@ -6,21 +7,33 @@ const CHARACTERISTIC_UART_RX = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 
 const CONNECTION_MTU = 100;
 
-export class BluetoothConnection {
+export class BluetoothConnection implements DeviceConnection {
+    private readQueue = new AsyncBlockingQueue<Uint8Array>();
+    private device?: BluetoothDevice;
+    private server?: BluetoothRemoteGATTServer;
+    private service?: BluetoothRemoteGATTService;
+    private rxCharacteristic?: BluetoothRemoteGATTCharacteristic;
+    private txCharacteristic?: BluetoothRemoteGATTCharacteristic;
+
+    public connected = false;
+
     constructor() {
-        this.readQueue = new AsyncBlockingQueue();
+        
     }
 
-    async read() {
+    async read(): Promise<Uint8Array> {
         return this.readQueue.dequeue();
     }
 
     async write(data) {
+        if (!this.connected) {
+            throw new Error("Bluetooth device not connected.");
+        }
         console.log(`Writing ${data.length} bytes...`);
         let start = 0;
         while (start < data.length) {
             let end = Math.min(start + CONNECTION_MTU, data.length);
-            await this.rxCharacteristic.writeValue(data.slice(start, end));
+            await this.rxCharacteristic!.writeValue(data.slice(start, end));
             start = end;
         }        
     }
@@ -34,7 +47,7 @@ export class BluetoothConnection {
             filters: [{name: ["mpy-uart"]}],
             optionalServices: [SERVICE_UART],
             acceptAllDevices: false,
-        });
+        } as RequestDeviceOptions);
 
         const onDisconnected = () => {
             this.connected = false;
@@ -42,7 +55,7 @@ export class BluetoothConnection {
 
         this.device.addEventListener('gattserverdisconnected', onDisconnected);
 
-        this.server = await this.device.gatt.connect();
+        this.server = await this.device.gatt!.connect();
         this.service = await this.server.getPrimaryService(SERVICE_UART);
         this.rxCharacteristic = await this.service.getCharacteristic(CHARACTERISTIC_UART_RX);
         this.txCharacteristic = await this.service.getCharacteristic(CHARACTERISTIC_UART_TX);
@@ -66,11 +79,12 @@ export class BluetoothConnection {
             return;
         }
 
-        if (!this.device.connected) {
+        if (!this.device.gatt!.connected) {
             console.log("Device is already disconnected.");
             return;
         }
 
-        await this.device.disconnect();
+        await this.device.gatt!.disconnect();
+        this.connected = false;
     }
 }

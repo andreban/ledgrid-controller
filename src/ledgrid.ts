@@ -1,18 +1,17 @@
+import { DeviceConnection } from './connections/connection';
+
 const decoder = new TextDecoder();
 
 export class LedGrid {
-  constructor(connection, width, height) {
-    this.connection = connection;
-    this.width = width;
-    this.height = height;
-    this.readLoop(this.connection);
+  constructor(private connection: DeviceConnection, private width: number, private height: number) {
+    this.readLoop();
   }
 
   /**
    * Sends an image to the LED grid.
    * @param {Uint8ClampedArray } imageData 
    */
-  async sendImage(imageData, brightness = 255) {
+  async sendImage(imageData: Uint8Array, brightness: number = 255) {
     if (!this.connection) {
       console.log('Connect to a device.');
       return;
@@ -48,7 +47,7 @@ export class LedGrid {
 /**
  * Applies a gamma conversion to a colour channel to correct the colours displayed on the LED grid.
  */
-function gamma(input, brightness) {
+function gamma(input: number, brightness: number): number {
   if (input === 0) {
     return 0;
   }

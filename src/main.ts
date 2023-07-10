@@ -1,20 +1,20 @@
-import 'emoji-picker-element';
-import { EmojiDatabase } from './database.mjs';
-import { LedGrid } from './ledgrid.mjs';
-import { BluetoothConnection } from './bluetooth_connection.mjs';
-import { SerialConnection } from './serial_connection.mjs';
+import { Picker } from 'emoji-picker-element';
+import { EmojiDatabase } from './database.js';
+import { LedGrid } from './ledgrid.js';
+import { BluetoothConnection } from './connections/bluetooth_connection.js';
+import { SerialConnection } from './connections/serial_connection.js';
 
 const emojiDatabase = new EmojiDatabase();
 
-const brightness = document.querySelector('#brightness');
-const connect = document.querySelector('#connect');
-const disconnect = document.querySelector('#disconnect');
-const btConnect = document.querySelector('#bt_connect');
-const btDisconnect = document.querySelector('#bt_disconnect');
-const emojiPicker = document.querySelector('emoji-picker');
-const canvas = document.querySelector('canvas');
+const brightness = document.querySelector('#brightness') as HTMLSelectElement;
+const connect = document.querySelector('#connect') as HTMLButtonElement;
+const disconnect = document.querySelector('#disconnect') as HTMLButtonElement;
+const btConnect = document.querySelector('#bt_connect') as HTMLButtonElement;
+const btDisconnect = document.querySelector('#bt_disconnect') as HTMLButtonElement;
+const emojiPicker = document.querySelector('emoji-picker') as Picker;
+const canvas = document.querySelector('canvas')! as HTMLCanvasElement;
 
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d')!;
 
 let ledgrid;
 
@@ -55,7 +55,7 @@ btDisconnect.addEventListener('click', async () => {
 });
 
 emojiPicker.addEventListener('emoji-click', event => {
-    emojiDatabase.setEmoji(event.detail.unicode);   
+    emojiDatabase.setEmoji(event.detail.unicode!);   
 });
 
 emojiDatabase.onEmojiUpdate((emoji) => {
