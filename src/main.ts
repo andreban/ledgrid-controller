@@ -1,3 +1,4 @@
+import 'emoji-picker-element';
 import { Picker } from 'emoji-picker-element';
 import { EmojiDatabase } from './database.js';
 import { LedGrid } from './ledgrid.js';

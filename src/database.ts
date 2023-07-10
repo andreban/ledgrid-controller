@@ -22,7 +22,7 @@ export class EmojiDatabase {
   }
   
   // Sets an emoji to the database.
-  async setEmoji(emoji: String) {
+  async setEmoji(emoji: string) {
     const db = getDatabase(this.app);
     set(ref(db, 'ledgrids/' + LED_GRID_ID), {
       emoji: emoji 
@@ -30,22 +30,22 @@ export class EmojiDatabase {
   }
   
   // Reads the current emoji on the database.
-  async getEmoji(): Promise<String> {
+  async getEmoji(): Promise<string> {
     const dbRef = ref(getDatabase());
     const snapshot = await get(child(dbRef, `ledgrids/${LED_GRID_ID}`));
     if (snapshot.exists()) {
-      return snapshot.val() as String;
+      return snapshot.val() as string;
     } else {
       return '🦙';
     }
   }
   
   // Listens for changes to the emoji on the database.
-  async onEmojiUpdate(callback: (String) => void) {
+  async onEmojiUpdate(callback: (string) => void) {
     const db = getDatabase();
     const starCountRef = ref(db, 'ledgrids/' + LED_GRID_ID + '/emoji');
     onValue(starCountRef, (snapshot) => {
-      const data = snapshot.val() as String;
+      const data = snapshot.val() as string;
       callback(data);
     });
   }
