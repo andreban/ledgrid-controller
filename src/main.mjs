@@ -1,3 +1,4 @@
+import 'emoji-picker-element';
 import { EmojiDatabase } from './database.mjs';
 import { LedGrid } from './ledgrid.mjs';
 import { BluetoothConnection } from './bluetooth_connection.mjs';

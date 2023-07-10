@@ -1,5 +1,5 @@
-import {initializeApp} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import {getDatabase, ref, set, get, onValue, child} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+import {initializeApp} from 'firebase/app';
+import {getDatabase, ref, set, get, onValue, child} from 'firebase/database';
 
 // The LED grid ID. We always use 1, since we want this to be relected for all users.
 const LED_GRID_ID = "1";

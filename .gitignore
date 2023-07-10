@@ -1,4 +1,6 @@
+dist/
 .DS_Store
+.parcel-cache/
 # Logs
 logs
 *.log
