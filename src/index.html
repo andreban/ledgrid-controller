@@ -82,8 +82,20 @@
       <div class="configuration">
         <button id="connect" class="button">Connect</button>
         <button id="disconnect" disabled class="button">Disconnect</button>
-        <button id="bt_connect" class="button">BT Connect</button>
-        <button id="bt_disconnect" class="button">BT Disconnect</button>
+
+        <label for="connection">Connection</label>
+        <select id="connection" name="connection" class="select">
+          <option value="serial">Serial</option>
+          <option value="bluetooth">Bluetooth</option>
+        </select>
+<!-- 
+        <label for="screen">Screen Size</label>
+        <select id="screen">
+          <option value="16">16x16</option>
+          <option value="22">22x22</option>
+          <option value="32">32x32</option>
+        </select> -->
+
         <label for="brightness">Brightness:</label>
         <select id="brightness" name="brightness" class="select">
           <option>255</option>

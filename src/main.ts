@@ -8,10 +8,10 @@ import { SerialConnection } from './connections/serial_connection.js';
 const emojiDatabase = new EmojiDatabase();
 
 const brightness = document.querySelector('#brightness') as HTMLSelectElement;
+// const screen = document.querySelector('#screen') as HTMLSelectElement;
+const connectionType = document.querySelector("#connection") as HTMLSelectElement;
 const connect = document.querySelector('#connect') as HTMLButtonElement;
 const disconnect = document.querySelector('#disconnect') as HTMLButtonElement;
-const btConnect = document.querySelector('#bt_connect') as HTMLButtonElement;
-const btDisconnect = document.querySelector('#bt_disconnect') as HTMLButtonElement;
 const emojiPicker = document.querySelector('emoji-picker') as Picker;
 const canvas = document.querySelector('canvas')! as HTMLCanvasElement;
 
@@ -29,31 +29,26 @@ function getBrightness() {
 
 disconnect.addEventListener('click', async () => {
   if (ledgrid) {
-    await ledgrid.disconnect();
+    await ledgrid.connection.disconnect();
   }
   disconnect.disabled = true;
   connect.disabled = false;
 });
 
 connect.addEventListener('click', async () => {
-  const serialConnection = new SerialConnection();
-  await serialConnection.connect();
-  ledgrid = new LedGrid(serialConnection, 16, 16);
+  let connection;
+  if (connectionType.value === 'serial') {
+    connection = new SerialConnection();
+  } else {
+    connection = new BluetoothConnection();
+  }
+  await connection.connect();  
+  ledgrid = new LedGrid(connection, 16, 16);
   connect.disabled = true;
   disconnect.disabled = false;
   await ledgrid.sendImage(ctx.getImageData(0, 0, 16, 16).data, getBrightness());
 });
 
-btConnect.addEventListener('click', async() => {
-  const bluetoothConnection = new BluetoothConnection();
-  await bluetoothConnection.connect();
-  ledgrid = new LedGrid(bluetoothConnection, 32, 32);
-  await ledgrid.sendImage(ctx.getImageData(0, 0, 32, 32).data, getBrightness());
-});
-
-btDisconnect.addEventListener('click', async () => {
-  await ledgrid.connection.disconnect();
-});
 
 emojiPicker.addEventListener('emoji-click', event => {
     emojiDatabase.setEmoji(event.detail.unicode!);   
