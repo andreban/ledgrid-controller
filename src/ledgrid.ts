@@ -3,7 +3,7 @@ import { DeviceConnection } from './connections/connection';
 const decoder = new TextDecoder();
 
 export class LedGrid {
-  constructor(private connection: DeviceConnection, private width: number, private height: number) {
+  constructor(private connection: DeviceConnection, readonly width: number, readonly height: number) {
     this.readLoop();
   }
 
