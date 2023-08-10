@@ -32,9 +32,14 @@ function getBrightness() {
 
 screen.addEventListener('change', async (e) => {
   const size = parseInt(screen.value);
+  localStorage['screen'] = screen.value;
   canvas.width = size;
   canvas.height = size;
   drawEmoji(ctx, lastEmoji, 'Arial', canvas.width, canvas.height);
+});
+
+connectionType.addEventListener('change', async (e) => {
+  localStorage['connection'] = connectionType.value;
 });
 
 disconnect.addEventListener('click', async () => {
@@ -81,8 +86,11 @@ emojiDatabase.onEmojiUpdate((emoji) => {
 brightness.addEventListener('change', () =>
     localStorage['brightness'] = getBrightness());
 
-document.addEventListener('DOMContentLoaded', () =>
-    brightness.value = localStorage['brightness'] ?? '255');
+document.addEventListener('DOMContentLoaded', () => {
+    brightness.value = localStorage['brightness'] ?? '255';
+    screen.value = localStorage['screen'] ?? '16';
+    connectionType.value = localStorage['connection'] ?? 'serial';
+});
 
 function drawEmoji(context: CanvasRenderingContext2D, text: string, font: string, maxWidth: number, maxHeight: number) {
   context.fillStyle = '#000000';
