@@ -76,8 +76,7 @@ emojiPicker.addEventListener('emoji-click', event => {
 
 emojiDatabase.onEmojiUpdate((emoji) => {
     lastEmoji = emoji;
-    const size = parseInt(screen.value);
-    drawEmoji(ctx, emoji, 'Arial', size, size);
+    drawEmoji(ctx, emoji, 'Arial', canvas.width, canvas.height);
     if (ledgrid) {
       ledgrid.sendImage(ctx.getImageData(0, 0, ledgrid.width, ledgrid.height).data, getBrightness());
     }
@@ -90,26 +89,31 @@ document.addEventListener('DOMContentLoaded', () => {
     brightness.value = localStorage['brightness'] ?? '255';
     screen.value = localStorage['screen'] ?? '16';
     connectionType.value = localStorage['connection'] ?? 'serial';
+    const size = parseInt(screen.value);
+    canvas.width = size;
+    canvas.height = size;
+    drawEmoji(ctx, lastEmoji, 'Arial', canvas.width, canvas.height);
 });
 
 function drawEmoji(context: CanvasRenderingContext2D, text: string, font: string, maxWidth: number, maxHeight: number) {
   context.fillStyle = '#000000';
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.textAlign = 'center';
-  context.textBaseline = 'top';
+  context.textBaseline = 'alphabetic';
   context.fillStyle = '#00FFFF';
-  context.font = `${maxHeight}px ${font}`;
 
-  let height = maxHeight;
-  let width = Number.MAX_VALUE;
-  while (width > maxWidth) {
-    context.font = `${height}px ${font}`;
-    const textMeasurement = context.measureText(text);
-    width = textMeasurement.width;
-    console.log(height, textMeasurement);
-    if (width > maxWidth) {
-      height -= 1;
-    }
+  let fontSize = maxHeight;
+  let measurement = context.measureText(text);
+  while (fontSize > 1) {
+    context.font = `${fontSize}px ${font}`;
+    measurement = context.measureText(text);
+    const w = measurement.width;
+    const h = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent;
+    if (w <= maxWidth && h <= maxHeight) break;
+    fontSize -= 1;
   }
-  context.fillText(text, maxWidth / 2, 3);
+
+  const h = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent;
+  const y = (maxHeight - h) / 2 + measurement.actualBoundingBoxAscent;
+  context.fillText(text, maxWidth / 2, y);
 }
