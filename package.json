@@ -2,10 +2,10 @@
   "name": "ledgrid-controller",
   "version": "0.1.0",
   "description": "Control an LED Grid over Web Serial",
-  "source": "src/index.html",
   "scripts": {
-    "start": "parcel",
-    "build": "parcel build"
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -18,8 +18,7 @@
   },
   "homepage": "https://github.com/andreban/ledgrid-controller#readme",
   "devDependencies": {
-    "parcel": "^2.9.3",
-    "process": "^0.11.10"
+    "vite": "^6.0.0"
   },
   "dependencies": {
     "@types/w3c-web-serial": "^1.0.3",

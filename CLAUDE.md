@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm start        # Dev server (Parcel, hot reload)
+npm start        # Dev server (Vite, hot reload)
 npm run build    # Production build → dist/
 
 # Firebase deployment
@@ -45,4 +45,4 @@ No test suite exists in this project.
 
 ### Build tooling
 
-Parcel v2 (zero-config). No `tsconfig.json` — TypeScript is handled by Parcel defaults. Entry point is `src/index.html`.
+Vite v6. No `tsconfig.json` — TypeScript is handled by Vite/esbuild defaults. Entry point is `src/index.html`. Config is in `vite.config.ts` (root set to `src/`, output to `dist/`).
