@@ -2,7 +2,7 @@ type Resolver<T> = (value: T | PromiseLike<T>) => void;
 
 class QueueEntry<T> {
   data: T;
-  next?: QueueEntry<T>
+  next?: QueueEntry<T>;
 
   constructor(data: T) {
     this.data = data;
@@ -68,7 +68,7 @@ export class AsyncBlockingQueue<T> {
   private resolverQueue: Queue<Resolver<T>> = new Queue<Resolver<T>>();
 
   private add(): void {
-    const promise = new Promise<T>(resolve => {
+    const promise = new Promise<T>((resolve) => {
       this.resolverQueue.enqueue(resolve);
     });
     this.promiseQueue.enqueue(promise);

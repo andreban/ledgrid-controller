@@ -3,13 +3,17 @@ import { DeviceConnection } from './connections/connection';
 const decoder = new TextDecoder();
 
 export class LedGrid {
-  constructor(private connection: DeviceConnection, readonly width: number, readonly height: number) {
+  constructor(
+    private connection: DeviceConnection,
+    readonly width: number,
+    readonly height: number,
+  ) {
     this.readLoop();
   }
 
   /**
    * Sends an image to the LED grid.
-   * @param {Uint8ClampedArray } imageData 
+   * @param {Uint8ClampedArray } imageData
    */
   async sendImage(imageData: Uint8Array, brightness: number = 255) {
     if (!this.connection) {
@@ -21,9 +25,9 @@ export class LedGrid {
     const buffer = new Uint8Array(numColours * 3);
     for (let i = 0; i < numColours; i++) {
       // imageData is RGBA, but we ignore the alpha channel.
-      let red = imageData[i * 4];
-      let green = imageData[i * 4 + 1];
-      let blue = imageData[i * 4 + 2];
+      const red = imageData[i * 4];
+      const green = imageData[i * 4 + 1];
+      const blue = imageData[i * 4 + 2];
 
       // Buffer is RGB
       buffer[i * 3] = gamma(red, brightness);
@@ -34,13 +38,13 @@ export class LedGrid {
   }
 
   async readLoop() {
-      while (true) {
-        const value = await this.connection.read();
-        if (!value) {
-          continue;
-        }
-        console.log(decoder.decode(value));
+    while (true) {
+      const value = await this.connection.read();
+      if (!value) {
+        continue;
       }
+      console.log(decoder.decode(value));
+    }
   }
 }
 

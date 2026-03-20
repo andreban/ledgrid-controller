@@ -10,19 +10,18 @@ const SIZE = 32;
 const emojiDatabase = new EmojiDatabase();
 const brightness = document.querySelector('#brightness') as HTMLSelectElement;
 const screen = document.querySelector('#screen') as HTMLSelectElement;
-const connectionType = document.querySelector("#connection") as HTMLSelectElement;
+const connectionType = document.querySelector('#connection') as HTMLSelectElement;
 const connect = document.querySelector('#connect') as HTMLButtonElement;
 const disconnect = document.querySelector('#disconnect') as HTMLButtonElement;
 const emojiPicker = document.querySelector('emoji-picker') as Picker;
-const canvas = document.querySelector('canvas')! as HTMLCanvasElement
-
+const canvas = document.querySelector('canvas')! as HTMLCanvasElement;
 
 canvas.width = SIZE;
 canvas.height = SIZE;
 const ctx = canvas.getContext('2d')!;
 
 let ledgrid;
-let lastEmoji = "👀"; 
+let lastEmoji = '👀';
 
 drawEmoji(ctx, lastEmoji, 'Arial', canvas.width, canvas.height);
 
@@ -30,7 +29,7 @@ function getBrightness() {
   return parseInt(brightness?.value, 10) || 255;
 }
 
-screen.addEventListener('change', async (e) => {
+screen.addEventListener('change', async () => {
   const size = parseInt(screen.value);
   localStorage['screen'] = screen.value;
   canvas.width = size;
@@ -38,7 +37,7 @@ screen.addEventListener('change', async (e) => {
   drawEmoji(ctx, lastEmoji, 'Arial', canvas.width, canvas.height);
 });
 
-connectionType.addEventListener('change', async (e) => {
+connectionType.addEventListener('change', async () => {
   localStorage['connection'] = connectionType.value;
 });
 
@@ -49,7 +48,7 @@ disconnect.addEventListener('click', async () => {
   disconnect.disabled = true;
   connect.disabled = false;
   screen.disabled = false;
-  connectionType.disabled = false
+  connectionType.disabled = false;
   ledgrid = null;
 });
 
@@ -61,41 +60,49 @@ connect.addEventListener('click', async () => {
   } else {
     connection = new BluetoothConnection();
   }
-  await connection.connect();  
+  await connection.connect();
   ledgrid = new LedGrid(connection, size, size);
   connect.disabled = true;
   disconnect.disabled = false;
   screen.disabled = true;
   connectionType.disabled = true;
-  await ledgrid.sendImage(ctx.getImageData(0, 0, ledgrid.width, ledgrid.height).data, getBrightness());
+  await ledgrid.sendImage(
+    ctx.getImageData(0, 0, ledgrid.width, ledgrid.height).data,
+    getBrightness(),
+  );
 });
 
-emojiPicker.addEventListener('emoji-click', event => {
-    emojiDatabase.setEmoji(event.detail.unicode!);   
+emojiPicker.addEventListener('emoji-click', (event) => {
+  emojiDatabase.setEmoji(event.detail.unicode!);
 });
 
 emojiDatabase.onEmojiUpdate((emoji) => {
-    lastEmoji = emoji;
-    drawEmoji(ctx, emoji, 'Arial', canvas.width, canvas.height);
-    if (ledgrid) {
-      ledgrid.sendImage(ctx.getImageData(0, 0, ledgrid.width, ledgrid.height).data, getBrightness());
-    }
+  lastEmoji = emoji;
+  drawEmoji(ctx, emoji, 'Arial', canvas.width, canvas.height);
+  if (ledgrid) {
+    ledgrid.sendImage(ctx.getImageData(0, 0, ledgrid.width, ledgrid.height).data, getBrightness());
+  }
 });
 
-brightness.addEventListener('change', () =>
-    localStorage['brightness'] = getBrightness());
+brightness.addEventListener('change', () => (localStorage['brightness'] = getBrightness()));
 
 document.addEventListener('DOMContentLoaded', () => {
-    brightness.value = localStorage['brightness'] ?? '255';
-    screen.value = localStorage['screen'] ?? '16';
-    connectionType.value = localStorage['connection'] ?? 'serial';
-    const size = parseInt(screen.value);
-    canvas.width = size;
-    canvas.height = size;
-    drawEmoji(ctx, lastEmoji, 'Arial', canvas.width, canvas.height);
+  brightness.value = localStorage['brightness'] ?? '255';
+  screen.value = localStorage['screen'] ?? '16';
+  connectionType.value = localStorage['connection'] ?? 'serial';
+  const size = parseInt(screen.value);
+  canvas.width = size;
+  canvas.height = size;
+  drawEmoji(ctx, lastEmoji, 'Arial', canvas.width, canvas.height);
 });
 
-function drawEmoji(context: CanvasRenderingContext2D, text: string, font: string, maxWidth: number, maxHeight: number) {
+function drawEmoji(
+  context: CanvasRenderingContext2D,
+  text: string,
+  font: string,
+  maxWidth: number,
+  maxHeight: number,
+) {
   context.fillStyle = '#000000';
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.textAlign = 'center';
