@@ -7,7 +7,8 @@
     "dev": "vite",
     "start": "vite",
     "build": "vite build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy": "firebase deploy --only hosting"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -34,6 +35,7 @@
     "daisyui": "^5.5.19",
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
+    "firebase-tools": "^15.11.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
