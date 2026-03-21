@@ -26,9 +26,9 @@ export function DeviceDrawer({
   onDisconnect,
 }: Props) {
   return (
-    <div className="w-full max-w-sm">
+    <div className="w-full">
       <button
-        className="btn btn-sm w-full justify-between bg-[#789ac7] text-white border-none hover:bg-[#6a8ab7]"
+        className="btn btn-sm w-full justify-between bg-[#6a8ab7] text-white border-none hover:bg-[#5a7aa7]"
         onClick={onToggle}
       >
         <span className="flex items-center gap-2">

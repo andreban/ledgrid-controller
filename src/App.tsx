@@ -74,15 +74,18 @@ export function App() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[lightsteelblue]">
-      <div className="navbar bg-[#789ac7] text-white shadow-md">
+      <div className="navbar bg-[#6a8ab7] text-white shadow-md">
         <span className="text-xl font-bold uppercase tracking-widest px-2">ledgrid</span>
       </div>
       <main className="flex flex-col gap-4 p-4 flex-1 min-h-0">
         <div className="flex flex-col md:flex-row flex-1 min-h-0 gap-4">
-          <div className="self-center md:self-start shrink-0">
+          <div className="self-center shrink-0 flex flex-col items-center gap-1">
             <EmojiCanvas ref={canvasRef} />
+            <span className="text-xs font-semibold text-[#2c4a6e] uppercase tracking-wider">
+              Preview
+            </span>
           </div>
-          <div className="flex-1 min-h-0 w-full overflow-hidden pb-2">
+          <div className="flex-1 min-h-0 w-full overflow-hidden rounded-lg border border-[#6a8ab7]">
             <EmojiPickerPanel onEmojiSelect={handleEmojiSelect} />
           </div>
         </div>

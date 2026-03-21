@@ -39,7 +39,7 @@ export const EmojiCanvas = memo(function EmojiCanvas({ ref }: Props) {
       ref={canvasRef}
       width={32}
       height={32}
-      className="w-28 h-28 md:w-48 md:h-48 rounded [image-rendering:pixelated]"
+      className="w-20 h-20 md:w-48 md:h-48 rounded-lg shadow-lg [image-rendering:pixelated]"
     />
   );
 });
