@@ -40,6 +40,6 @@
     "@types/w3c-web-serial": "^1.0.3",
     "@types/web-bluetooth": "^0.0.17",
     "emoji-picker-element": "^1.18.3",
-    "firebase": "^10.12.2"
+    "firebase": "^12.11.0"
   }
 }
