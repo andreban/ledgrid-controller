@@ -1,13 +1,16 @@
-import { DeviceConnection } from './connections/connection';
+import type { DeviceConnection } from './connections/connection';
 
 const decoder = new TextDecoder();
 
 export class LedGrid {
-  constructor(
-    private connection: DeviceConnection,
-    readonly width: number,
-    readonly height: number,
-  ) {
+  private connection: DeviceConnection;
+  readonly width: number;
+  readonly height: number;
+
+  constructor(connection: DeviceConnection, width: number, height: number) {
+    this.connection = connection;
+    this.width = width;
+    this.height = height;
     this.readLoop();
   }
 
@@ -15,7 +18,11 @@ export class LedGrid {
    * Sends an image to the LED grid.
    * @param {Uint8ClampedArray } imageData
    */
-  async sendImage(imageData: Uint8Array, brightness: number = 255) {
+  async disconnect() {
+    await this.connection.disconnect();
+  }
+
+  async sendImage(imageData: Uint8ClampedArray, brightness: number = 255) {
     if (!this.connection) {
       console.log('Connect to a device.');
       return;

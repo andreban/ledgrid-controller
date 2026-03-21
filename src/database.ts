@@ -1,4 +1,4 @@
-import { FirebaseApp, initializeApp } from 'firebase/app';
+import { type FirebaseApp, initializeApp } from 'firebase/app';
 import { getDatabase, ref, set, get, onValue, child } from 'firebase/database';
 
 // The LED grid ID. We always use 1, since we want this to be relected for all users.
@@ -41,7 +41,7 @@ export class EmojiDatabase {
   }
 
   // Listens for changes to the emoji on the database.
-  async onEmojiUpdate(callback: (string) => void) {
+  async onEmojiUpdate(callback: (emoji: string) => void) {
     const db = getDatabase();
     const starCountRef = ref(db, 'ledgrids/' + LED_GRID_ID + '/emoji');
     onValue(starCountRef, (snapshot) => {

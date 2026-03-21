@@ -1,5 +1,5 @@
 import { AsyncBlockingQueue } from '../queue.js';
-import { DeviceConnection } from './connection.js';
+import type { DeviceConnection } from './connection.js';
 
 const SERVICE_UART = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const CHARACTERISTIC_UART_TX = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
@@ -23,7 +23,7 @@ export class BluetoothConnection implements DeviceConnection {
     return this.readQueue.dequeue();
   }
 
-  async write(data) {
+  async write(data: Uint8Array) {
     if (!this.connected) {
       throw new Error('Bluetooth device not connected.');
     }
@@ -60,8 +60,9 @@ export class BluetoothConnection implements DeviceConnection {
 
     // Setup listening for values and adding to the queue.
     await this.txCharacteristic.startNotifications();
-    const handleNotifications = (event) => {
-      this.readQueue.enqueue(event.target.value);
+    const handleNotifications = (event: Event) => {
+      const characteristic = event.target as BluetoothRemoteGATTCharacteristic;
+      this.readQueue.enqueue(new Uint8Array(characteristic.value!.buffer));
     };
     this.txCharacteristic.addEventListener('characteristicvaluechanged', handleNotifications);
     this.connected = true;

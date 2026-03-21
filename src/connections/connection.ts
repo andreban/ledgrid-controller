@@ -1,6 +1,6 @@
 export interface DeviceConnection {
-  connect();
-  disconnect();
-  write(data: Uint8Array);
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  write(data: Uint8Array): Promise<void>;
   read(): Promise<Uint8Array | undefined>;
 }

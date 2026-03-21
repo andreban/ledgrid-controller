@@ -1,5 +1,4 @@
-import { WritableStreamDefaultWriter } from 'stream/web';
-import { DeviceConnection } from './connection';
+import type { DeviceConnection } from './connection';
 
 export class SerialConnection implements DeviceConnection {
   private connected: boolean;

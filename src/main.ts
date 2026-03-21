@@ -20,7 +20,7 @@ canvas.width = SIZE;
 canvas.height = SIZE;
 const ctx = canvas.getContext('2d')!;
 
-let ledgrid;
+let ledgrid: LedGrid | null = null;
 let lastEmoji = '👀';
 
 drawEmoji(ctx, lastEmoji, 'Arial', canvas.width, canvas.height);
@@ -43,7 +43,7 @@ connectionType.addEventListener('change', async () => {
 
 disconnect.addEventListener('click', async () => {
   if (ledgrid) {
-    await ledgrid.connection.disconnect();
+    await ledgrid.disconnect();
   }
   disconnect.disabled = true;
   connect.disabled = false;
