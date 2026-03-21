@@ -73,8 +73,8 @@ export function App() {
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-base-200">
-      <div className="navbar bg-primary text-primary-content shadow-md">
+    <div className="flex flex-col h-screen overflow-hidden bg-[lightsteelblue]">
+      <div className="navbar bg-[#789ac7] text-white shadow-md">
         <span className="text-xl font-bold uppercase tracking-widest px-2">ledgrid</span>
       </div>
       <main className="flex flex-col gap-4 p-4 flex-1 min-h-0">

@@ -1,4 +1,4 @@
-import EmojiPicker, { type EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { Theme, type EmojiClickData } from 'emoji-picker-react';
 
 interface Props {
   onEmojiSelect: (emoji: string) => void;
@@ -9,5 +9,5 @@ export function EmojiPickerPanel({ onEmojiSelect }: Props) {
     onEmojiSelect(data.emoji);
   }
 
-  return <EmojiPicker onEmojiClick={handleClick} width="100%" height="100%" />;
+  return <EmojiPicker onEmojiClick={handleClick} width="100%" height="100%" theme={Theme.DARK} />;
 }

@@ -27,7 +27,10 @@ export function DeviceDrawer({
 }: Props) {
   return (
     <div className="w-full max-w-sm">
-      <button className="btn btn-ghost btn-sm w-full justify-between" onClick={onToggle}>
+      <button
+        className="btn btn-sm w-full justify-between bg-[#789ac7] text-white border-none hover:bg-[#6a8ab7]"
+        onClick={onToggle}
+      >
         <span className="flex items-center gap-2">
           <span
             className={`inline-block w-2 h-2 rounded-full ${connected ? 'bg-success' : 'bg-base-content/30'}`}
@@ -38,7 +41,7 @@ export function DeviceDrawer({
       </button>
 
       {open && (
-        <div className="card bg-base-100 shadow-md mt-2 p-4 flex flex-col gap-3">
+        <div className="card bg-[#a8bfd8] shadow-md mt-2 p-4 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="text-sm">Connection</span>
             <select
