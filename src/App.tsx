@@ -7,6 +7,7 @@ import { EmojiCanvas, type EmojiCanvasHandle } from './components/EmojiCanvas.js
 import { EmojiPickerPanel } from './components/EmojiPickerPanel.js';
 import { DeviceDrawer } from './components/DeviceDrawer.js';
 import { useLocalStorage } from './hooks/useLocalStorage.js';
+import { useEmojiWebMCP } from './hooks/useEmojiWebMCP.js';
 
 const emojiDatabase = new EmojiDatabase();
 
@@ -26,6 +27,15 @@ export function App() {
   const [connected, setConnected] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  function handleEmojiSelect(emoji: string) {
+    emojiDatabase.setEmoji(emoji);
+  }
+
+  // Register WebMCP tools (search_emojis, display_emoji) with the browser modelContext
+  useEmojiWebMCP({
+    onSelectEmoji: handleEmojiSelect,
+  });
+
   useEffect(() => {
     brightnessRef.current = brightness;
   }, [brightness]);
@@ -40,10 +50,6 @@ export function App() {
       }
     });
   }, []);
-
-  function handleEmojiSelect(emoji: string) {
-    emojiDatabase.setEmoji(emoji);
-  }
 
   function handleScreenSizeChange(size: number) {
     setScreenSize(size);
